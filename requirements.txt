@@ -1,0 +1,7 @@
+langgraph
+langchain
+langchain_community
+langchain_groq
+python-dotenv
+amadeus
+streamlit
