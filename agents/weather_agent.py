@@ -3,15 +3,15 @@ import requests
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
-import streamlit as st
+
 
 # Load environment variables
 load_dotenv()
-os.environ['GROQ_API_KEY'] = st.secrets["GROQ_API_KEY"]
-OPENWEATHER_API_KEY = st.secrets["OPENWEATHER_API_KEY"]
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # Initialize LLM
-llm = ChatGroq(model_name="Gemma2-9b-It")
+llm = ChatGroq(model_name="llama-3.1-8b-instant")
 
 def get_city_coordinates(city):
     url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={OPENWEATHER_API_KEY}"

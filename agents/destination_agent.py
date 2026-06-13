@@ -1,13 +1,13 @@
-import os
+
 from dotenv import load_dotenv
+import os 
 load_dotenv()
-import streamlit as st
-os.environ['GROQ_API_KEY'] = st.secrets["GROQ_API_KEY"]
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
-llm = ChatGroq(model_name='Gemma2-9b-It')
+llm = ChatGroq(model_name='llama-3.1-8b-instant')
 
 def destination(preferences, budget, interests):
     generic_template = (

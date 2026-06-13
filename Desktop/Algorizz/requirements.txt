@@ -1,9 +1,0 @@
-gradio
-langchain
-langchain-community
-langchain-openai
-faiss-cpu
-sentence-transformers
-pypdf
-openai
-python-dotenv
