@@ -1,6 +1,6 @@
 # Travel Buddy - Smart Travel Planning Assistant  
 
-## Overview  
+## Overview   
 
 Travel Buddy is an AI-powered travel planning assistant that helps users plan their perfect trip within India. The application guides users through a step-by-step process, from selecting destinations to generating detailed itineraries, using real-time flight data and weather forecasts.  
 
