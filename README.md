@@ -61,7 +61,7 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
 
 1. Clone the repository:  
    ```bash  
-   git clone https://github.com/yourusername/travel-buddy.git  
+   git clone https://github.com/Anveeksha15/Tour_Planner_Bot.git
    cd travel-buddy  
    ```  
 
