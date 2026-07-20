@@ -110,20 +110,9 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
 - Change CSS in the `<style>` section for different themes  
 - Extend flight search logic for more airport alternatives  
 
-## Future Enhancements  
-
-✅ **Done:**  
+ 
 - Real-time flight data (Amadeus API)  
 - Dynamic weather forecasts (OpenWeather API)  
 - AI-driven recommendations (Gemma2-9b-It)  
 
-🔜 **Planned:**  
-- Hotel & activity booking integration  
-- Multi-city trip support  
-- User accounts to save trip history  
 
-## License  
-
-[MIT License] - Free for personal and commercial use.  
-
----  
