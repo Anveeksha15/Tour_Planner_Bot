@@ -11,7 +11,7 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
 ### 1. **Trip Planning Workflow**  
 - Multi-step process with progress tracking  
 - Interactive forms for preferences and dates  
-- Visual step indicators in sidebar  
+- Visual step indicators in sidebar 
 
 ### 2. **Smart Destination Recommendations**  
 - AI-powered destination suggestions based on:  
