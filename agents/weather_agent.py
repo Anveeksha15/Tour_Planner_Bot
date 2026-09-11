@@ -11,7 +11,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # Initialize LLM
-llm = ChatGroq(model_name="llama-3.1-8b-instant")
+llm = ChatGroq(model_name="openai/gpt-oss-20b")
 
 def get_city_coordinates(city):
     url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={OPENWEATHER_API_KEY}"

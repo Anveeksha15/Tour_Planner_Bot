@@ -2,9 +2,9 @@
 
 ## Overview   
 
-Travel Buddy is an AI-powered travel planning assistant that helps users plan their perfect trip within India. The application guides users through a step-by-step process, from selecting destinations to generating detailed itineraries, using real-time flight data and weather forecasts.  
+Travel Buddy is an AI-powered travel planning assistant that helps users plan their perfect trip within India. The application guides users through a step-by-step process, from selecting destinations to generating detailed itineraries, using simulated flight data and current weather conditions.  
 
-Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for live flight searches, and **OpenWeather API** for accurate weather forecasts, Travel Buddy ensures a seamless and data-driven travel planning experience.  
+Powered by **Groq-hosted `openai/gpt-oss-20b`** (destination, itinerary, and weather summarization) and **`llama-3.1-8b-instant`** (budget estimation) for AI-driven recommendations, a **built-in flight simulator** for realistic Indian flight options, and the **OpenWeather API** for current weather conditions, Travel Buddy ensures a seamless and data-driven travel planning experience — with no flight API key required.  
 
 ## Features  
 
@@ -18,12 +18,14 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
   - Preferred regions (beaches, mountains, cities)  
   - Travel interests (sightseeing, adventure, food)  
   - Budget considerations  
-- Uses **Gemma2-9b-It** for personalized recommendations  
+- Uses **Groq's `openai/gpt-oss-20b`** for personalized recommendations  
 
-### 3. **Real-Time Flight Planning**  
-- **Amadeus API Integration** for live flight data  
-- Searches nearby airports if no direct flights are available  
-- Automatically suggests flights from the next nearest airport  
+### 3. **Simulated Flight Planning**  
+- Self-contained flight simulator (`agents/flight_planner.py`) — no external flight API needed  
+- Static IATA airport database with a ~90-entry nearest-airport map (e.g. Manali→Chandigarh, Munnar→Kochi, Agra→Delhi) including road distances, used when no direct flights are available at the origin/destination  
+- Seeded random flight offers modeled on realistic Indian carriers, so results are deterministic for a given search  
+- ±2-day flexible date search: if no flights are found on the exact date, suggests alternative nearby dates  
+- Round-trip support, including return legs with stops  
 - Displays:  
   - Airline, flight number, timings  
   - Departure & arrival airports  
@@ -31,57 +33,73 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
 
 ### 4. **Budget Calculator**  
 - Accommodation type selection (Budget hostel to Luxury resort)  
-- Comprehensive budget estimation including:  
-  - Flights (real-time pricing)  
-  - Daily expenses  
-  - Activities based on interests  
+- Returns a single estimated total budget (falls back to ₹50,000 if the agent can't produce one)  
 
 ### 5. **Itinerary Generator**  
 - AI-generated day-by-day activity planning  
 - Personalized based on user interests  
 - Downloadable itinerary in Markdown format  
 
-### 6. **Accurate Weather Forecast**  
-- **OpenWeather API integration** for real-time weather data  
-- Forecast for travel dates  
+### 6. **Current Weather Conditions**  
+- **OpenWeather API integration** (geocoding + current weather endpoint)  
+- LLM-summarized conditions for the destination  
 - Temperature, conditions, and recommendations  
+- Note: this reflects **current** weather at query time, not a forecast for your actual travel dates  
 
 ## Technical Stack  
 
 - **Frontend**: Streamlit (Python web framework)  
 - **AI Agents**:  
-  - **Gemma2-9b-It** for destination, budget, and itinerary generation  
+  - **`openai/gpt-oss-20b`** (Groq) for destination, itinerary, and weather summarization  
+  - **`llama-3.1-8b-instant`** (Groq) for budget estimation  
 - **APIs**:  
-  - **Amadeus API** (Flight search & real-time pricing)  
-  - **OpenWeather API** (Weather forecasts)  
+  - **Groq API** (LLM inference)  
+  - **OpenWeather API** (current weather data)  
+- **Flight Data**: Local simulator — static airport database + seeded random offer generation, no external API  
 - **Styling**: Custom CSS with modern UI components  
 - **State Management**: Streamlit session state  
+
+## Project Structure
+
+Tour_Planner_Bot/
+├── app.py # Streamlit entry point, step-by-step UI flow
+├── agents/
+│ ├── destination_agent.py # Destination recommendations (gpt-oss-20b)
+│ ├── flight_planner.py # Flight simulator (AIRPORT_DB, NEARBY_AIRPORT_MAP, generate_mock_flights)
+│ ├── budget_agent.py # Budget estimation (llama-3.1-8b-instant)
+│ ├── itinerary_agent.py # Day-by-day itinerary generation (gpt-oss-20b)
+│ └── weather_agent.py # OpenWeather lookup + summarization (gpt-oss-20b)
+├── requirements.txt
+├── .env # GROQ_API_KEY, OPENWEATHER_API_KEY
+└── .devcontainer/ # Codespaces dev container config
+
 
 ## Installation  
 
 1. Clone the repository:  
-   ```bash  
+```bash  
    git clone https://github.com/Anveeksha15/Tour_Planner_Bot.git
-   cd tour_planer_bot 
-   ```  
+   cd Tour_Planner_Bot
+```  
 
 2. Install dependencies:  
-   ```bash  
+```bash  
    pip install -r requirements.txt  
-   ```  
+```  
+   > Note: `requirements.txt` currently still lists `amadeus`, `langgraph`, and `langchain_community`, which nothing in the codebase imports. Safe to remove if you want a leaner install.
 
 3. Set up API keys:  
-   - Obtain **Amadeus API** & **OpenWeather API** keys  
-   - Add them to `.env` file:  
-     ```  
-     AMADEUS_API_KEY=your_api_key  
-     OPENWEATHER_API_KEY=your_api_key  
-     ```  
+   - Obtain a **Groq API key** and an **OpenWeather API** key  
+   - Add them to `.env` file:
+ GROQ_API_KEY=your_api_key  
+ OPENWEATHER_API_KEY=your_api_key
 
 4. Run the application:  
-   ```bash  
+```bash  
    streamlit run app.py  
-   ```  
+```  
+
+   You can also open this project in **GitHub Codespaces** — a dev container config is included for a ready-to-run environment.
 
 ## Usage  
 
@@ -92,14 +110,17 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
    - Select from dynamically generated options  
 
 3. **Check Flight Availability**  
-   - Real-time flight options with alternative airports if needed  
+   - Simulated flight options based on origin/destination airports  
+   - If no direct flights exist, nearby airports are checked using the built-in distance map  
+   - If nothing is available on your exact date, alternative dates within ±2 days are suggested  
 
 4. **Set Budget & Generate Itinerary**  
    - Adjust accommodation type  
    - Get a detailed day-by-day plan  
+   - Budget total is a single estimated figure (reference fallback: ₹50,000)  
 
-5. **Check Weather Forecast**  
-   - See weather predictions for travel dates  
+5. **Check Weather Conditions**  
+   - See current weather conditions for the destination (not a dated forecast)  
 
 6. **Download Itinerary**  
    - Save as Markdown for offline use  
@@ -108,11 +129,15 @@ Powered by **Gemma2-9b-It** for AI-driven recommendations, **Amadeus API** for l
 
 - Modify `app.py` to adjust AI prompts  
 - Change CSS in the `<style>` section for different themes  
-- Extend flight search logic for more airport alternatives  
+- Extend `AIRPORT_DB` and `NEARBY_AIRPORT_MAP` in `agents/flight_planner.py` to add more airports or adjust road-distance fallbacks  
+- Adjust the flexible-date search window (`window=2`) in `flight_planner.py` to widen or narrow the ±day search  
+- Adjust `generate_mock_flights` to change how simulated offers (carriers, pricing, timings) are generated  
 
- 
-- Real-time flight data (Amadeus API)  
-- Dynamic weather forecasts (OpenWeather API)  
-- AI-driven recommendations (Gemma2-9b-It)  
+## Limitations
 
+- **Flights are simulated, not real.** There is no live flight API integration — offers come from a seeded random generator over a static airport database, so prices and availability won't match real bookings.
+- **Weather is current, not forecasted.** The weather agent reports conditions at the time of the query via OpenWeather's current-weather endpoint, not a forecast for your actual travel dates.
+- **Passenger count is hardcoded to 1 adult in the UI**, even though `flight_planner_agent` already supports 1–9 adults under the hood — this isn't yet exposed as a UI control.
+- **Budget is a single reference total**, not a breakdown across flights/daily expenses/activities, and falls back to a flat ₹50,000 if the agent can't produce an estimate.
+- `requirements.txt` includes unused entries (`amadeus`, `langgraph`, `langchain_community`) left over from an earlier design; nothing in the code currently imports them.
 

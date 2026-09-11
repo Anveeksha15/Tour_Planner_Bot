@@ -7,7 +7,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
-llm = ChatGroq(model_name='llama-3.1-8b-instant')
+llm = ChatGroq(model_name='openai/gpt-oss-20b')
 
 def destination(preferences, budget, interests):
     generic_template = (
