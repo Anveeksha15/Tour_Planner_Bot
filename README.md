@@ -125,19 +125,4 @@ Tour_Planner_Bot/
 6. **Download Itinerary**  
    - Save as Markdown for offline use  
 
-## Customization  
-
-- Modify `app.py` to adjust AI prompts  
-- Change CSS in the `<style>` section for different themes  
-- Extend `AIRPORT_DB` and `NEARBY_AIRPORT_MAP` in `agents/flight_planner.py` to add more airports or adjust road-distance fallbacks  
-- Adjust the flexible-date search window (`window=2`) in `flight_planner.py` to widen or narrow the ±day search  
-- Adjust `generate_mock_flights` to change how simulated offers (carriers, pricing, timings) are generated  
-
-## Limitations
-
-- **Flights are simulated, not real.** There is no live flight API integration — offers come from a seeded random generator over a static airport database, so prices and availability won't match real bookings.
-- **Weather is current, not forecasted.** The weather agent reports conditions at the time of the query via OpenWeather's current-weather endpoint, not a forecast for your actual travel dates.
-- **Passenger count is hardcoded to 1 adult in the UI**, even though `flight_planner_agent` already supports 1–9 adults under the hood — this isn't yet exposed as a UI control.
-- **Budget is a single reference total**, not a breakdown across flights/daily expenses/activities, and falls back to a flat ₹50,000 if the agent can't produce an estimate.
-- `requirements.txt` includes unused entries (`amadeus`, `langgraph`, `langchain_community`) left over from an earlier design; nothing in the code currently imports them.
 
